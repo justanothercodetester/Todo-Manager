@@ -1,8 +1,7 @@
+<img width="128" height="128" alt="blue-check-mark-icon-on-transparent-background-free-png-3269077736" src="https://github.com/user-attachments/assets/395579a1-fc71-4264-a590-e6b216dd53c7" />
+
 > [!Caution]
 > This program was just a quick hour long project to test the capabilities of the .net framework and coding apps for older versions of windows. This app will not recieve any updates, so if you have a problem with the program, feel free to modify the source code yourself.
-
-
-<img width="128" height="128" alt="blue-check-mark-icon-on-transparent-background-free-png-3269077736" src="https://github.com/user-attachments/assets/395579a1-fc71-4264-a590-e6b216dd53c7" />
 
 # Todo Manager
 This is a todo manager program created using the .net framework 3.5 to maintain compatibility with older, unsupported operating systems such as windows xp
