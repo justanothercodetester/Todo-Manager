@@ -10,5 +10,4 @@ This is a todo manager program created using the .net framework 3.5 to maintain 
 * A computer that's able to run the .net 3.5 framework, so windows xp or above (or windows 95 and above if you install dotnet9x)
 
 # Instructions
-To install the todo manager app, go to releases and download the zip file. Then, extract and open up the file. Double click on the setup file, and click install. A prompt may pop up saying that the publisher is not verified. However, this code is open source, and you can feel free to look through the code or compile the program yourself if it makes you feel safe. Of course, you could also get the portable version, but you have to manually launch an exe file in the file explorer manually every time. Only use it if you can't run the installer for whatever reason.
-
+Go to releases, and download the executable installer. If that does not work, download the oneclick installer zip file, extract the file, and run setup.exe. If even that doesn't work due to how old your operating system is, run the portable .exe file to access the program. Just remember to install the .net framework 3.5 on the windows os you're running the program on.
