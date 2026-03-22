@@ -1,4 +1,4 @@
-[!NOTE]
+[!Caution]
 This program was just a quick hour long project to test the capabilities of the .net framework and coding apps for older versions of windows. This app will not recieve any updates, so if you have a problem with the program, feel free to modify the source code.
 
 # Todo Manager
