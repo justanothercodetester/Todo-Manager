@@ -11,7 +11,9 @@ namespace Todo_Manager
     public partial class Form1 : Form
     {
         private readonly string _storagePath;
+        private readonly string _settingsPath;
         private List<TodoItem> _tasks = new List<TodoItem>();
+        private AppSettings _settings = new AppSettings();
 
         public Form1()
         {
@@ -23,11 +25,13 @@ namespace Todo_Manager
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
             _storagePath = Path.Combine(dir, "tasks.xml");
+            _settingsPath = Path.Combine(dir, "settings.xml");
 
             // wire events
             btnAdd.Click += BtnAdd_Click;
             btnRemove.Click += BtnRemove_Click;
             btnToggleDone.Click += BtnToggleDone_Click;
+            RCT.Click += RCT_Click;
             listViewTasks.DoubleClick += ListViewTasks_DoubleClick;
             this.Load += Form1_Load;
             this.FormClosing += Form1_FormClosing;
@@ -38,13 +42,18 @@ namespace Todo_Manager
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            LoadSettings();
+            ApplySettings();
             LoadTasks();
             RefreshListView();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveTasks();
+            if (_settings.SaveOnClose)
+            {
+                SaveTasks();
+            }
         }
 
         private void TextBox1_KeyDown(object sender, KeyEventArgs e)
@@ -107,6 +116,13 @@ namespace Todo_Manager
             ToggleSelectedDone();
         }
 
+        private void RCT_Click(object sender, EventArgs e)
+        {
+            _tasks.RemoveAll(i => i.IsDone);
+            RefreshListView();
+            SaveTasks();
+        }
+
         private void ListViewTasks_DoubleClick(object sender, EventArgs e)
         {
             ToggleSelectedDone();
@@ -143,7 +159,14 @@ namespace Todo_Manager
                 if (t.IsDone)
                 {
                     lvi.ForeColor = Color.Gray;
-                    lvi.Font = new Font(listViewTasks.Font, FontStyle.Strikeout);
+                    if (_settings.ShowStrikethrough)
+                    {
+                        lvi.Font = new Font(listViewTasks.Font, FontStyle.Strikeout);
+                    }
+                    else
+                    {
+                        lvi.Font = new Font(listViewTasks.Font, FontStyle.Regular);
+                    }
                 }
                 else
                 {
@@ -204,17 +227,108 @@ namespace Todo_Manager
             }
         }
 
-        // keep the auto-generated event present (unused)
+        private void LoadSettings()
+        {
+            try
+            {
+                if (!File.Exists(_settingsPath))
+                {
+                    _settings = new AppSettings();
+                    SaveSettings();
+                    return;
+                }
+
+                using (var fs = File.OpenRead(_settingsPath))
+                {
+                    var serializer = new XmlSerializer(typeof(AppSettings));
+                    _settings = (AppSettings)serializer.Deserialize(fs) ?? new AppSettings();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to load settings: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _settings = new AppSettings();
+            }
+        }
+
+        public void SaveSettings()
+        {
+            try
+            {
+                using (var fs = File.Create(_settingsPath))
+                {
+                    var serializer = new XmlSerializer(typeof(AppSettings));
+                    serializer.Serialize(fs, _settings);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to save settings: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ApplySettings()
+        {
+            if (_settings.DarkMode)
+            {
+                this.BackColor = Color.FromArgb(45, 45, 48);
+                this.ForeColor = Color.White;
+                label1.ForeColor = Color.White;
+                label2.ForeColor = Color.White;
+                listViewTasks.BackColor = Color.Gray;
+                listViewTasks.ForeColor = Color.White;
+                textBox1.BackColor = Color.FromArgb(37, 37, 38);
+                textBox1.ForeColor = Color.White;
+                btnRemove.BackColor = Color.LightBlue;
+                btnToggleDone.BackColor = Color.LightBlue;
+                RCT.BackColor = Color.LightBlue;
+                dateTimePicker1.BackColor = Color.FromArgb(37, 37, 38);
+                dateTimePicker1.ForeColor = Color.White;
+            }
+            else
+            {
+                this.BackColor = Color.WhiteSmoke;
+                this.ForeColor = Color.Black;
+                label1.ForeColor = Color.FromArgb(45, 45, 48);
+                label2.ForeColor = Color.FromArgb(80, 80, 80);
+                listViewTasks.BackColor = Color.White;
+                listViewTasks.ForeColor = Color.Black;
+                textBox1.BackColor = Color.White;
+                textBox1.ForeColor = Color.Black;
+                btnRemove.BackColor = Color.White;
+                btnToggleDone.BackColor = Color.White;
+                RCT.BackColor = Color.White;
+                dateTimePicker1.BackColor = Color.White;
+                dateTimePicker1.ForeColor = Color.Black;
+            }
+        }
+
+        private void reloadTasksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadTasks();
+            RefreshListView();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_settings.SaveOnClose)
+            {
+                SaveTasks();
+            }
+            Close();
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettignsDialogue dlg = new SettignsDialogue(_settings, this);
+            dlg.ShowDialog();
+            ApplySettings();
+            RefreshListView();
+        }
+
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
             // no-op: date selected for new task
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            _tasks.RemoveAll(i => i.IsDone);
-            RefreshListView();
-            SaveTasks();
         }
     }
 
@@ -224,5 +338,13 @@ namespace Todo_Manager
         public string Description { get; set; }
         public DateTime DueDate { get; set; }
         public bool IsDone { get; set; }
+    }
+
+    [Serializable]
+    public class AppSettings
+    {
+        public bool DarkMode { get; set; } = false;
+        public bool ShowStrikethrough { get; set; } = true;
+        public bool SaveOnClose { get; set; } = true;
     }
 }

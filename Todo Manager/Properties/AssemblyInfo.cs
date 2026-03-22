@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Todo Manager")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A simple todo manager that utilizes the .net 3.5 framework to maintain compatibility with older windows operating systems")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("N/A")]
 [assembly: AssemblyProduct("Todo Manager")]
-[assembly: AssemblyCopyright("Copyright ©  2026")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © JustAnotherCodeTester 2026")]
+[assembly: AssemblyTrademark("JustAnotherCodeTester TM")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.0")]
+[assembly: AssemblyFileVersion("1.1.0")]
